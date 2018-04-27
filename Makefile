@@ -102,7 +102,7 @@ Tools/aiger-1.9.9/aigbmc: Tools/aiger-1.9.9 Tools/picosat/picosat.o
 	make -C Tools/aiger-1.9.9 aigbmc
 
 Tools/aiger-1.9.9: Tools/aiger-1.9.9.tar.gz
-	cd Tools ; tar xzf aiger-1.9.9.tar.gz
+	cd Tools ; tar -xzf aiger-1.9.9.tar.gz
 
 Tools/aiger-1.9.9.tar.gz: Tools/.f
 	cd Tools ; curl -OL http://fmv.jku.at/aiger/aiger-1.9.9.tar.gz
@@ -249,10 +249,10 @@ Tools/ltl3ba-1.1.3/ltl3ba: Tools/ltl3ba-1.1.3
 	cd Tools ; make -C ltl3ba-1.1.3
 
 Tools/ltl3ba-1.1.3: Tools/ltl3ba-1.1.3.tar.gz
-	cd Tools ; tar xzf ltl3ba-1.1.3.tar.gz
+	cd Tools ; tar -xzf ltl3ba-1.1.3.tar.gz
 	
 Tools/ltl3ba-1.1.3.tar.gz: Tools/.f
-	cd Tools ; curl -OL https://sourceforge.net/projects/ltl3ba/files/ltl3ba/1.1/ltl3ba-1.1.3.tar.gz
+	cd Tools #; curl -OL https://sourceforge.net/projects/ltl3ba/files/ltl3ba/1.1/ltl3ba-1.1.3.tar.gz
 
 # idq
 Tools/idq: Tools/idq-1.0/idq

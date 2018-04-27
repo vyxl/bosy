@@ -106,6 +106,8 @@ public struct SolutionSearch {
         self.searchStrategy = searchStrategy
         self.player = player
         self.bound = bound
+
+        print("~~~ SolutionSearch: backend is \(backend)")
         
         switch backend {
         case .explicit:

@@ -97,6 +97,11 @@ struct SmtEncoding: BoSyEncoding {
             }
         }
         
+        print("")
+        print("~~~")
+        print(smt)
+        print("~~~")
+        print("")
         return smt
     }
     

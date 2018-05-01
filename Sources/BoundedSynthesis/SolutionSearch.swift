@@ -107,8 +107,6 @@ public struct SolutionSearch {
         self.player = player
         self.bound = bound
 
-        print("~~~ SolutionSearch: backend is \(backend)")
-        
         switch backend {
         case .explicit:
             encoding = ExplicitEncoding(options: options, automaton: automaton, specification: specification)

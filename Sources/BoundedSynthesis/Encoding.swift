@@ -8,7 +8,7 @@ enum BoSyEncodingError: Error {
 
 protocol BoSyEncoding {
     
-    mutating func solve(forBound bound: Int) throws -> Bool
+    mutating func solve(forBound bound: Int) throws -> String?
     func extractSolution() -> TransitionSystem?
     
 }

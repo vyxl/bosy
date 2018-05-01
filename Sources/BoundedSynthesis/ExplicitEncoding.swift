@@ -183,7 +183,7 @@ struct ExplicitEncoding: BoSyEncoding {
     }
 
     
-    mutating func solve(forBound bound: Int) throws -> Bool {
+    mutating func solve(forBound bound: Int) throws -> String? {
         Logger.default().info("build encoding for bound \(bound)")
         
         let constraintTimer = options.statistics?.startTimer(phase: .constraintGeneration)
@@ -207,9 +207,9 @@ struct ExplicitEncoding: BoSyEncoding {
             // keep top level valuations of solver
             self.assignments = assignments
             self.solutionBound = bound
-            return true
+            return "no string encoding available"
         }
-        return false
+        return nil
     }
     
     func extractSolution() -> TransitionSystem? {

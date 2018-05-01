@@ -152,7 +152,7 @@ struct StateSymbolicEncoding: BoSyEncoding {
         return "\(name)_\(state)"
     }
     
-    mutating func solve(forBound bound: Int) throws -> Bool {
+    mutating func solve(forBound bound: Int) throws -> String? {
         Logger.default().info("build encoding for bound \(bound)")
         
         let constraintTimer = options.statistics?.startTimer(phase: .constraintGeneration)
@@ -172,7 +172,11 @@ struct StateSymbolicEncoding: BoSyEncoding {
         }
         solvingTimer?.stop()
         
-        return result == .sat
+        if result == .sat {
+            return "no string encoding available"
+        } else {
+            return nil
+        }
     }
     
     func extractSolution() -> TransitionSystem? {

@@ -50,6 +50,7 @@ public struct BoSyOptions {
     // default options
     public var specificationFile: String? = nil
     public var synthesize: Bool = false
+    public var encodingOnly: Bool = false
     public var searchStrategy: SearchStrategy = .exponential
     public var player: Players = .both
     public var backend: Backends = .inputSymbolic
@@ -84,6 +85,8 @@ public struct BoSyOptions {
                 Logger.default().verbosity = .debug
             case "--synthesize":
                 synthesize = true
+            case "--encoding-only":
+                encodingOnly = true
             case "--strategy":
                 guard let value = arguments.popFirst() else {
                     throw CommandLineOptionsError.noValue(argument: argument)
@@ -259,6 +262,7 @@ public struct BoSyOptions {
               "  --help\t\tshow this help and exit\n",
               "  --verbose\t\tshow verbose output\n",
               "  --synthesize\t\tconstruct AIGER solution after realizability\n",
+              "  --encoding-only\t\tprint the encoding that produces a solution\n",
               "  --statistics\t\tdisplay solving statistics\n",
               "  --strategy linear|exponential\n",
               "  --player both|system|environment\n",

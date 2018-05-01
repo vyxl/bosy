@@ -135,7 +135,7 @@ class SafetyGameReduction: BoSyEncoding {
         self.specification = specification
     }
     
-    func solve(forBound bound: Int) throws -> Bool {
+    func solve(forBound bound: Int) throws -> String? {
         Logger.default().debug("build safety game with k=\(bound)")
         
         let manager = CUDDManager()
@@ -148,9 +148,9 @@ class SafetyGameReduction: BoSyEncoding {
             self.solver = solver
             self.winningRegion = winningRegion
             self.safetyGame = safetyGame
-            return true
+            return "no string encoding available"
         } else {
-            return false
+            return nil
         }
     }
     

@@ -126,8 +126,30 @@ private func buildAutomaton(player: Player) -> CoBüchiAutomaton? {
     }
 }
 
-func search(strategy: SearchStrategy, player: Player, synthesize: Bool) -> (() -> ()) {
-    Logger.default().debug("start search strategy (strategy: \"\(strategy)\", player: \"\(player)\", synthesize: \(synthesize))")
+private func getEncoding(strategy: SearchStrategy, player: Player) -> (() -> ()) {
+    return {
+        guard let automaton = buildAutomaton(player: player) else {
+            return
+        }
+
+        Logger.default().info("automaton contains \(automaton.states.count) states")
+
+        var search = SolutionSearch(options: options, specification: specification, automaton:
+            automaton, searchStrategy: strategy, player: player, backend: options.backend,
+            initialBound: options.minBound, synthesize: false)
+
+        if let solution = search.getSolutionEncoding() {
+            print(solution)
+        }
+    }
+}
+
+func search(strategy: SearchStrategy, player: Player, synthesize: Bool, encodingOnly: Bool) -> (() -> ()) {
+    Logger.default().debug("start search strategy (strategy: \"\(strategy)\", player: \"\(player)\", synthesize: \(synthesize), encodingOnly: \(encodingOnly))")
+    if encodingOnly {
+        return getEncoding(strategy: strategy, player: player)
+    }
+
     return {
         guard let automaton = buildAutomaton(player: player) else {
             return
@@ -222,8 +244,10 @@ let condition = NSCondition()
 var finished = false
 
 
-let searchSystem = search(strategy: options.searchStrategy, player: .system, synthesize: options.synthesize)
-let searchEnvironment = search(strategy: options.searchStrategy, player: .environment, synthesize: options.synthesize)
+let searchSystem = search(strategy: options.searchStrategy, player: .system, synthesize:
+    options.synthesize, encodingOnly: options.encodingOnly)
+let searchEnvironment = search(strategy: options.searchStrategy, player: .environment, synthesize:
+    options.synthesize, encodingOnly: options.encodingOnly)
 
 let doSearchSystem = options.player.contains(.system)
 let doSearchEnvironment = options.player.contains(.environment)

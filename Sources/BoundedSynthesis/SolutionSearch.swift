@@ -122,12 +122,36 @@ public struct SolutionSearch {
             encoding = SafetyGameReduction(options: options, automaton: automaton, specification: specification)
         }
     }
+
+    public mutating func getSolutionEncoding(limit: Int = Int.max) -> String? {
+        while bound <= limit {
+            Logger.default().debug("search for solution of bound \(bound) (player: \"\(player)\")")
+            do {
+                if let encoding = try encoding.solve(forBound: bound) {
+                    Logger.default().info("found solution with \(bound) states")
+                    return encoding
+                }
+            } catch BoSyEncodingError.EncodingFailed(let message) {
+                Logger.default().error(message)
+                return nil
+            } catch BoSyEncodingError.SolvingFailed(let message) {
+                Logger.default().error(message)
+                return nil
+            } catch {
+                Logger.default().error("Unknown error while building/solving")
+                return nil
+            }
+            
+            bound = searchStrategy.next(bound: bound)
+        }
+        return nil
+    }
     
     public mutating func hasSolution(limit: Int = Int.max) -> Bool {
         while bound <= limit {
             Logger.default().debug("search for solution of bound \(bound) (player: \"\(player)\")")
             do {
-                if try encoding.solve(forBound: bound) {
+                if try nil != encoding.solve(forBound: bound) {
                     Logger.default().info("found solution with \(bound) states")
                     return true
                 }

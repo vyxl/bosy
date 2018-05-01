@@ -234,3 +234,24 @@ real func = one without a name with a !
     - bool or datatype with no-arg constructors
 - enumerate all possibilities and negate function results
 - OR everything together and add to model
+
+---
+
+bosy outputs a counterexample model in the case of failure
+with bad inputs
+
+---
+
+added an option --encoding-only to produce just the smt encoding
+
+came up with a script to run bosy and then run my script to extract models
+added a max number of models to produce
+
+added robustness for checking that the thing was realizable
+
+seems that checking player == .system doesn't mean it's unrealizable necessarily
+not sure why.
+
+fixed - check after getting solution
+
+added debug ability to python script, shell script

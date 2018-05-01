@@ -255,3 +255,23 @@ not sure why.
 fixed - check after getting solution
 
 added debug ability to python script, shell script
+
+---
+
+bosy will search for the minimum number of states first, which means a formula like:
+
+G (i -> X o)
+
+will come up with the stateless solution first, and nothing more
+
+so, we need to also configure bosy to give higher number of states when that's possible.
+
+idea - add this as an argument to bosy
+
+found it - --min-bound and --max-bound already exist
+
+---
+
+did a synthesis on G (i -> X o) with 2 states and ended up with 72 models!
+
+Q: do all models map to unique automata???

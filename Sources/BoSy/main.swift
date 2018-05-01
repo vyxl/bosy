@@ -138,12 +138,12 @@ private func getEncoding(strategy: SearchStrategy, player: Player) -> (() -> ())
             automaton, searchStrategy: strategy, player: player, backend: options.backend,
             initialBound: options.minBound, synthesize: false)
 
-        if player != .system {
-            print("unrealizable")
-            return
-        }
         if let solution = search.getSolutionEncoding() {
-            print(solution)
+            if player == .system {
+                print(solution)
+            } else {
+                print("unrealizable")
+            }
         }
     }
 }

@@ -275,3 +275,17 @@ found it - --min-bound and --max-bound already exist
 did a synthesis on G (i -> X o) with 2 states and ended up with 72 models!
 
 Q: do all models map to unique automata???
+
+---
+
+figured out how to get model to print sexpr (SMT format)
+
+---
+
+z3 does sexpr for declare-datatypes wrong
+
+to extract solution ->
+    start z3
+    pipe in declare-datatypes
+    pipe in function definitions (model.sexpr())
+    ask to extract solution

@@ -21,11 +21,11 @@ do {
     exit(1)
 }
 
-let json: String
+let fileContents: String
 
 let parseTimer = options.statistics?.startTimer(phase: .parsing)
 
-var fileFormat: SupportedFileFormats = .bosy
+var fileFormat: SupportedFileFormats = options.fromModel ? .encoding : .bosy
 
 if let specificationFile = options.specificationFile {
     Logger.default().debug("reading from file \"\(specificationFile)\"")
@@ -33,7 +33,7 @@ if let specificationFile = options.specificationFile {
         print("error: cannot read input file \(specificationFile)")
         exit(1)
     }
-    json = specficationString
+    fileContents = specficationString
     if specificationFile.hasSuffix(".tlsf") {
         fileFormat = .tlsf
     }
@@ -49,24 +49,27 @@ if let specificationFile = options.specificationFile {
         print("error: cannot read input from stdin")
         exit(1)
     }
-    json = specficationString
+    fileContents = specficationString
 }
 
 var specification: SynthesisSpecification
 
 switch fileFormat {
 case .bosy:
-    guard let s = SynthesisSpecification.fromJson(string: json) else {
+    guard let s = SynthesisSpecification.fromJson(string: fileContents) else {
         print("error: cannot parse specification")
         exit(1)
     }
     specification = s
 case .tlsf:
-    guard let s = SynthesisSpecification.from(tlsf: json) else {
+    guard let s = SynthesisSpecification.from(tlsf: fileContents) else {
         print("error: cannot parse specification")
         exit(1)
     }
     specification = s
+case .encoding:
+    // nop; will use json directly
+    specification = SynthesisSpecification.fromJson(string: "")!
 }
 
 parseTimer?.stop()

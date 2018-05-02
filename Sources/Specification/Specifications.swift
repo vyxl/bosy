@@ -43,6 +43,14 @@ public struct SynthesisSpecification: Codable {
         return assumptions.reduce(LTL.tt, &&) => guarantees.reduce(LTL.tt, &&)
     }
     
+    public init(semantics: TransitionSystemType, inputs: [String], outputs: [String], assumptions: [LTL], guarantees: [LTL]) {
+        self.semantics = semantics
+        self.inputs = inputs
+        self.outputs = outputs
+        self.assumptions = assumptions
+        self.guarantees = guarantees
+    }
+
     public static func fromJson(string: String) -> SynthesisSpecification? {
         Logger.default().debug("parse JSON input file")
 

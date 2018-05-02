@@ -68,8 +68,8 @@ case .tlsf:
     }
     specification = s
 case .encoding:
-    // nop; will use json directly
-    specification = SynthesisSpecification.fromJson(string: "")!
+    // nop
+    specification = SynthesisSpecification(semantics: .mealy, inputs: [], outputs: [], assumptions: [], guarantees: [])
 }
 
 parseTimer?.stop()
@@ -245,6 +245,10 @@ func search(strategy: SearchStrategy, player: Player, synthesize: Bool, encoding
     Logger.default().debug("start search strategy (strategy: \"\(strategy)\", player: \"\(player)\", synthesize: \(synthesize), encodingOnly: \(encodingOnly))")
     if encodingOnly {
         return getEncoding(strategy: strategy, player: player)
+    }
+
+    if options.fromModel {
+        return getRepresentation()
     }
 
     return {

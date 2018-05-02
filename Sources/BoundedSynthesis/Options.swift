@@ -92,6 +92,8 @@ public struct BoSyOptions {
                 fromModel = true
                 // --from-model implies --synthesize
                 synthesize = true
+                // only one player (avoid executing twice)
+                player = .system
             case "--strategy":
                 guard let value = arguments.popFirst() else {
                     throw CommandLineOptionsError.noValue(argument: argument)

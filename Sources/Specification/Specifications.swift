@@ -22,6 +22,9 @@ public enum TransitionSystemType: String, Codable {
 public enum SupportedFileFormats {
     case bosy
     case tlsf
+
+    // use when synthesizing from prebuilt model
+    case encoding
 }
 
 public struct SynthesisSpecification: Codable {

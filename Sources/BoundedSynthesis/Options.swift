@@ -51,6 +51,7 @@ public struct BoSyOptions {
     public var specificationFile: String? = nil
     public var synthesize: Bool = false
     public var encodingOnly: Bool = false
+    public var fromModel: Bool = false
     public var searchStrategy: SearchStrategy = .exponential
     public var player: Players = .both
     public var backend: Backends = .inputSymbolic
@@ -87,6 +88,10 @@ public struct BoSyOptions {
                 synthesize = true
             case "--encoding-only":
                 encodingOnly = true
+            case "--from-model":
+                fromModel = true
+                // --from-model implies --synthesize
+                synthesize = true
             case "--strategy":
                 guard let value = arguments.popFirst() else {
                     throw CommandLineOptionsError.noValue(argument: argument)
@@ -263,6 +268,8 @@ public struct BoSyOptions {
               "  --verbose\t\tshow verbose output\n",
               "  --synthesize\t\tconstruct AIGER solution after realizability\n",
               "  --encoding-only\tprint the encoding that produces a solution\n",
+              "  --from-model\t\tuse a pre-made model as input. The input file must be in the\n",
+                        "\t\t\t\tformat of the chosen encoding. Implies --synthesize\n",
               "  --statistics\t\tdisplay solving statistics\n",
               "  --min-bound\t\tminimum number of states\n",
               "  --max-bound\t\tmaximum number of states\n",

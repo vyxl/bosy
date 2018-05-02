@@ -299,4 +299,8 @@ struct InputSymbolicEncoding: BoSyEncoding {
         extractionTimer?.stop()
         return solution
     }
+
+    func injectModel(model: String) throws -> () {
+        throw BoSyEncodingError.Unimplemented("InputSymbolicEncoding.injectModel: not supported yet")
+    }
 }

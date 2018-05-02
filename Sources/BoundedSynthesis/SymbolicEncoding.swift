@@ -210,4 +210,8 @@ struct SymbolicEncoding: BoSyEncoding {
     func extractSolution() -> TransitionSystem? {
         return nil
     }
+
+    func injectModel(model: String) throws -> () {
+        throw BoSyEncodingError.Unimplemented("SymbolicEncoding.injectModel: not supported yet")
+    }
 }

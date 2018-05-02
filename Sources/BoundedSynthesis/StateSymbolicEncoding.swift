@@ -182,4 +182,8 @@ struct StateSymbolicEncoding: BoSyEncoding {
     func extractSolution() -> TransitionSystem? {
         return nil
     }
+
+    func injectModel(model: String) throws -> () {
+        throw BoSyEncodingError.Unimplemented("StateSymbolicEncoding.injectModel: not supported yet")
+    }
 }

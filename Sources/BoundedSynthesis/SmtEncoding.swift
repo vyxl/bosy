@@ -156,6 +156,12 @@ struct SmtEncoding: BoSyEncoding {
             return nil
         }
     }
+
+    func injectModel(model: String) throws -> () {
+        /*
+        solver.inject(model)
+        */
+    }
     
     func extractSolution() -> TransitionSystem? {
         guard let solver = solver else {

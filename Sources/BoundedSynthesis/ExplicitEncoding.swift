@@ -260,4 +260,9 @@ struct ExplicitEncoding: BoSyEncoding {
         extractionTimer?.stop()
         return solution
     }
+
+    func injectModel(model: String) throws -> () {
+        throw BoSyEncodingError.Unimplemented("ExplicitEncoding.injectModel: not supported yet")
+    }
+
 }

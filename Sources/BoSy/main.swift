@@ -151,6 +151,96 @@ private func getEncoding(strategy: SearchStrategy, player: Player) -> (() -> ())
     }
 }
 
+private func getSynthesis(search: SolutionSearch) -> () {
+
+    guard let solution = search.getSolution() else {
+        Logger.default().error("could not construct solution")
+        return
+    }
+    switch options.target {
+    case .aiger:
+        guard let aiger_solution = (solution as? AigerRepresentable)?.aiger else {
+            Logger.default().error("could not encode solution as AIGER")
+            return
+        }
+        let minimized = aiger_solution.minimized
+        aiger_write_to_file(minimized, aiger_ascii_mode, stdout)
+    case .dot:
+        guard let dot = (solution as? DotRepresentable)?.dot else {
+            Logger.default().error("could not encode solution as dot")
+            return
+        }
+        print(dot)
+    case .dotTopology:
+        guard let dot = (solution as? DotRepresentable)?.dotTopology else {
+            Logger.default().error("could not encode solution as dot")
+            return
+        }
+        print(dot)
+    case .smv:
+        guard let smv = (solution as? SmvRepresentable)?.smv else {
+            Logger.default().error("could not encode solution as SMV")
+            return
+        }
+        print(smv)
+    case .verilog:
+        guard let verilog = (solution as? VerilogRepresentable)?.verilog else {
+            Logger.default().error("could not encode solution as Verilog")
+            return
+        }
+        print(verilog)
+    case .all:
+        var result: [String:String] = [:]
+        guard let dotSolution = solution as? DotRepresentable else {
+            Logger.default().error("could not encode solution as dot")
+            return
+        }
+        result["dot"] = dotSolution.dot
+        result["dot-topology"] = dotSolution.dotTopology
+        guard let smv = (solution as? SmvRepresentable)?.smv else {
+            Logger.default().error("could not encode solution as SMV")
+            return
+        }
+        result["smv"] = smv
+        guard let verilog = (solution as? VerilogRepresentable)?.verilog else {
+            Logger.default().error("could not encode solution as Verilog")
+            return
+        }
+        result["verilog"] = verilog
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: result) else {
+            Logger.default().error("could not encode solution JSON")
+            return
+        }
+        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+            Logger.default().error("could not encode solution JSON")
+            return
+        }
+        print(jsonString)
+    }
+}
+
+private func getRepresentation() -> (() -> ()) {
+
+    return {
+        // dummy
+        let automaton = CoBüchiAutomaton(initialStates: [], states: [], transitions: [:],
+            safetyConditions: [:], rejectingStates: [])
+
+        let search = SolutionSearch(options: options, specification: specification, automaton:
+            automaton, backend: options.backend, initialBound: options.minBound, synthesize: false)
+
+        do {
+            try search.injectModel(model: fileContents)
+        } catch {
+            Logger.default().error("could not inject model: \(error)")
+            exit(1)
+        }
+
+        getSynthesis(search: search)
+    }
+
+}
+
 func search(strategy: SearchStrategy, player: Player, synthesize: Bool, encodingOnly: Bool) -> (() -> ()) {
     Logger.default().debug("start search strategy (strategy: \"\(strategy)\", player: \"\(player)\", synthesize: \(synthesize), encodingOnly: \(encodingOnly))")
     if encodingOnly {
@@ -173,72 +263,8 @@ func search(strategy: SearchStrategy, player: Player, synthesize: Bool, encoding
                 player == .system ? print("result: realizable") : print("result: unrealizable")
                 return
             }
-            guard let solution = search.getSolution() else {
-                Logger.default().error("could not construct solution")
-                return
-            }
-            switch options.target {
-            case .aiger:
-                guard let aiger_solution = (solution as? AigerRepresentable)?.aiger else {
-                    Logger.default().error("could not encode solution as AIGER")
-                    return
-                }
-                let minimized = aiger_solution.minimized
-                aiger_write_to_file(minimized, aiger_ascii_mode, stdout)
-                player == .system ? print("result: realizable") : print("result: unrealizable")
-            case .dot:
-                guard let dot = (solution as? DotRepresentable)?.dot else {
-                    Logger.default().error("could not encode solution as dot")
-                    return
-                }
-                print(dot)
-            case .dotTopology:
-                guard let dot = (solution as? DotRepresentable)?.dotTopology else {
-                    Logger.default().error("could not encode solution as dot")
-                    return
-                }
-                print(dot)
-            case .smv:
-                guard let smv = (solution as? SmvRepresentable)?.smv else {
-                    Logger.default().error("could not encode solution as SMV")
-                    return
-                }
-                print(smv)
-            case .verilog:
-                guard let verilog = (solution as? VerilogRepresentable)?.verilog else {
-                    Logger.default().error("could not encode solution as Verilog")
-                    return
-                }
-                print(verilog)
-            case .all:
-                var result: [String:String] = [:]
-                guard let dotSolution = solution as? DotRepresentable else {
-                    Logger.default().error("could not encode solution as dot")
-                    return
-                }
-                result["dot"] = dotSolution.dot
-                result["dot-topology"] = dotSolution.dotTopology
-                guard let smv = (solution as? SmvRepresentable)?.smv else {
-                    Logger.default().error("could not encode solution as SMV")
-                    return
-                }
-                result["smv"] = smv
-                guard let verilog = (solution as? VerilogRepresentable)?.verilog else {
-                    Logger.default().error("could not encode solution as Verilog")
-                    return
-                }
-                result["verilog"] = verilog
-                guard let jsonData = try? JSONSerialization.data(withJSONObject: result) else {
-                    Logger.default().error("could not encode solution JSON")
-                    return
-                }
-                guard let jsonString = String(data: jsonData, encoding: .utf8) else {
-                    Logger.default().error("could not encode solution JSON")
-                    return
-                }
-                print(jsonString)
-            }
 
+            getSynthesis(search: search)
             return
         }
         print("result: unknown")

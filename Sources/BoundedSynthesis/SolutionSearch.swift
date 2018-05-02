@@ -170,6 +170,10 @@ public struct SolutionSearch {
         }
         return false
     }
+
+    public func injectModel(model: String) throws -> () {
+        try encoding.injectModel(model: model)
+    }
     
     public func getSolution() -> TransitionSystem? {
         return encoding.extractSolution()

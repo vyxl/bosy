@@ -172,6 +172,7 @@ struct SmtEncoding: BoSyEncoding {
     }
     
     func extractSolution() -> TransitionSystem? {
+        Logger.default().debug("extractSolution: enter")
         guard let solver = solver else {
             return nil
         }
@@ -183,6 +184,7 @@ struct SmtEncoding: BoSyEncoding {
 
         var solution = ExplicitStateSolution(bound: solutionBound, specification: specification)
         
+        Logger.default().debug("extractSolution: transition relation")
         // extract solution: transition relation
         for source in 0..<solutionBound {
             for i in allBooleanAssignments(variables: inputPropositions) {
@@ -202,6 +204,7 @@ struct SmtEncoding: BoSyEncoding {
             }
         }
         
+        Logger.default().debug("extractSolution: outputs")
         // extract solution: outputs
         for output in specification.outputs {
             for source in 0..<solutionBound {

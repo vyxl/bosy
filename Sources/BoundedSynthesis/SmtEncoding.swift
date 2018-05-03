@@ -165,7 +165,8 @@ struct SmtEncoding: BoSyEncoding {
         return solver
     }
 
-    mutating func injectModel(model: String) throws -> () {
+    mutating func injectModel(model: String, withBound bound: Int) throws -> () {
+        self.solutionBound = bound
         let solver = try startSolver()
         try solver.injectModel(model: model)
     }

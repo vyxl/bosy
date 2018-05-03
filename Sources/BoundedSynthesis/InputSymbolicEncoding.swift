@@ -300,7 +300,7 @@ struct InputSymbolicEncoding: BoSyEncoding {
         return solution
     }
 
-    func injectModel(model: String) throws -> () {
+    func injectModel(model: String, withBound bound: Int) throws -> () {
         throw BoSyEncodingError.Unimplemented("InputSymbolicEncoding.injectModel: not supported yet")
     }
 }

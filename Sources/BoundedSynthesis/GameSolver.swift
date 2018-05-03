@@ -173,7 +173,7 @@ class SafetyGameReduction: BoSyEncoding {
         return solution
     }
     
-    func injectModel(model: String) throws -> () {
+    func injectModel(model: String, withBound bound: Int) throws -> () {
         throw BoSyEncodingError.Unimplemented("GameSafetyReduction.injectModel: not supported yet")
     }
 }

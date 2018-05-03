@@ -183,7 +183,7 @@ struct StateSymbolicEncoding: BoSyEncoding {
         return nil
     }
 
-    func injectModel(model: String) throws -> () {
+    func injectModel(model: String, withBound bound: Int) throws -> () {
         throw BoSyEncodingError.Unimplemented("StateSymbolicEncoding.injectModel: not supported yet")
     }
 }

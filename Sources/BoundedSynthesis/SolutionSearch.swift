@@ -172,7 +172,7 @@ public struct SolutionSearch {
     }
 
     public mutating func injectModel(model: String) throws -> () {
-        try encoding.injectModel(model: model)
+        try encoding.injectModel(model: model, withBound: self.bound)
     }
     
     public func getSolution() -> TransitionSystem? {

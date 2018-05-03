@@ -289,3 +289,55 @@ to extract solution ->
     pipe in declare-datatypes
     pipe in function definitions (model.sexpr())
     ask to extract solution
+
+---
+
+added model option to JSON spec
+added --from-model flag to take model directly from JSON, inject it into the solver, and use that.
+
+works really well: 
+
+```
+[brianheim@BrianMBP bosy]$ cat ltl.bosy
+{
+	"semantics": "mealy",
+		"inputs": ["r_0"],
+		"outputs": ["g_0"],
+		"assumptions": [],
+		"guarantees": [
+			"G (r_0 -> g_0)",
+		],
+		"model": "(declare-datatypes () ((S (s0) (s1)))) (define-fun k!80 ((x!0 Bool)) Bool (ite (= x!0 false) false true)) (define-fun lambda_T0!83 ((x!0 S)) Bool (ite (= x!0 s1) false true)) (define-fun tau!84 ((x!0 S) (x!1 Bool)) S (ite (and (= x!0 s1) (= x!1 true)) s1 (ite (and (= x!0 s1) (= x!1 false)) s1 s0))) (define-fun g_0!82 ((x!0 S) (x!1 Bool)) Bool (ite (and (= x!0 s1) (= x!1 false)) false true)) (define-fun lambda_T0_S1!85 ((x!0 S)) Bool (ite (= x!0 s1) false true)) (define-fun k!81 ((x!0 S)) S (ite (= x!0 s0) s0 s1)) (define-fun g_0 ((x!0 S) (x!1 Bool)) Bool (g_0!82 (k!81 x!0) (k!80 x!1))) (define-fun lambda_T0 ((x!0 S)) Bool (lambda_T0!83 (k!81 x!0))) (define-fun tau ((x!0 S) (x!1 Bool)) S (tau!84 (k!81 x!0) (k!80 x!1))) (define-fun lambda_T0_S1 ((x!0 S)) Bool (lambda_T0_S1!85 (k!81 x!0)))"
+}
+
+[brianheim@BrianMBP bosy]$ ./bosy.sh --from-model ltl.bosy --backend smt --target verilog --min-bound 2
+module fsm(r_0, g_0);
+  input r_0;
+  output g_0;
+  reg [0:0] state;
+
+  assign g_0 = ((state == 0) && 1 || (state == 1) && r_0) ? 1 : 0;
+
+  initial
+  begin
+    state = 0;
+  end
+  always @($global_clock)
+  begin
+    case(state)
+      0:
+           state = 0;
+
+      1:
+           state = 1;
+
+    endcase
+  end
+endmodule
+```
+
+TODO: should be able to specify as array of strings
+
+TODO: either call release binary directly or skip build altogether for maximum speed
+
+`./.build/x86_64-apple-macosx10.10/release/BoSy`

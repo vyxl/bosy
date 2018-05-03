@@ -848,21 +848,20 @@ class GenericSmtSolver: SmtSolver {
         }
 
         inputPipe.fileHandleForWriting.write(encodedModel)
-        var result: SolverResult? = nil
+
         repeat {
             let data = outputPipe.fileHandleForReading.availableData
             guard let output = String(data: data, encoding: .utf8) else {
+                Logger.default().error("injectModel: could not decode response from solver")
                 return
             }
             if output.contains("unsat") {
-                print("unsat")
-                result = .unsat
+                Logger.default().error("injectModel: provided model was unsat")
+                return
             } else if output.contains("sat") {
-                print("sat")
-                result = .sat
+                return
             }
-        } while (result == nil)
-        return
+        } while (true)
     }
     
 }

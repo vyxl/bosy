@@ -22,9 +22,6 @@ public enum TransitionSystemType: String, Codable {
 public enum SupportedFileFormats {
     case bosy
     case tlsf
-
-    // use when synthesizing from prebuilt model
-    case encoding
 }
 
 public struct SynthesisSpecification: Codable {
@@ -33,22 +30,16 @@ public struct SynthesisSpecification: Codable {
     public let outputs: [String]
     public let assumptions: [LTL]
     public let guarantees: [LTL]
+    public let model: String?
     
     public var dualized: SynthesisSpecification {
         let dualizedLTL = !ltl
-        return SynthesisSpecification(semantics: semantics.swapped, inputs: outputs, outputs: inputs, assumptions: [], guarantees: [dualizedLTL])
+        return SynthesisSpecification(semantics: semantics.swapped, inputs: outputs, outputs:
+            inputs, assumptions: [], guarantees: [dualizedLTL], model: model)
     }
     
     public var ltl: LTL {
         return assumptions.reduce(LTL.tt, &&) => guarantees.reduce(LTL.tt, &&)
-    }
-    
-    public init(semantics: TransitionSystemType, inputs: [String], outputs: [String], assumptions: [LTL], guarantees: [LTL]) {
-        self.semantics = semantics
-        self.inputs = inputs
-        self.outputs = outputs
-        self.assumptions = assumptions
-        self.guarantees = guarantees
     }
 
     public static func fromJson(string: String) -> SynthesisSpecification? {

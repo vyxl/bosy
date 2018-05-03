@@ -25,7 +25,7 @@ let fileContents: String
 
 let parseTimer = options.statistics?.startTimer(phase: .parsing)
 
-var fileFormat: SupportedFileFormats = options.fromModel ? .encoding : .bosy
+var fileFormat: SupportedFileFormats = .bosy
 
 if let specificationFile = options.specificationFile {
     Logger.default().debug("reading from file \"\(specificationFile)\"")
@@ -67,9 +67,6 @@ case .tlsf:
         exit(1)
     }
     specification = s
-case .encoding:
-    // nop
-    specification = SynthesisSpecification(semantics: .mealy, inputs: [], outputs: [], assumptions: [], guarantees: [])
 }
 
 parseTimer?.stop()

@@ -844,6 +844,21 @@ class GenericSmtSolver: SmtSolver {
         }
 
         inputPipe.fileHandleForWriting.write(encodedModel)
+        var result: SolverResult? = nil
+        repeat {
+            let data = outputPipe.fileHandleForReading.availableData
+            guard let output = String(data: data, encoding: .utf8) else {
+                return
+            }
+            if output.contains("unsat") {
+                print("unsat")
+                result = .unsat
+            } else if output.contains("sat") {
+                print("sat")
+                result = .sat
+            }
+        } while (result == nil)
+        return
     }
     
 }

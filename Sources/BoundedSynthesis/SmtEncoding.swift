@@ -138,10 +138,7 @@ struct SmtEncoding: BoSyEncoding {
         constraintTimer?.stop()
         //print(instance)
         
-        guard let solver = options.solver?.instance as? SmtSolver else {
-            throw BoSyEncodingError.SolvingFailed("solver creation failed")
-        }
-        self.solver = solver
+        let solver = try startSolver()
         
         let solvingTimer = options.statistics?.startTimer(phase: .solving)
         guard let result = solver.solve(formula: instance) else {
@@ -157,10 +154,20 @@ struct SmtEncoding: BoSyEncoding {
         }
     }
 
-    func injectModel(model: String) throws -> () {
-        /*
-        solver.inject(model)
-        */
+    private mutating func startSolver() throws -> SmtSolver {
+        if let solver : SmtSolver = self.solver {
+            return solver
+        }
+        guard let solver = options.solver?.instance as? SmtSolver else {
+            throw BoSyEncodingError.SolvingFailed("solver creation failed")
+        }
+        self.solver = solver
+        return solver
+    }
+
+    mutating func injectModel(model: String) throws -> () {
+        let solver = try startSolver()
+        try solver.injectModel(model: model)
     }
     
     func extractSolution() -> TransitionSystem? {

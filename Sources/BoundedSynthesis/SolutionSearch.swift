@@ -171,7 +171,7 @@ public struct SolutionSearch {
         return false
     }
 
-    public func injectModel(model: String) throws -> () {
+    public mutating func injectModel(model: String) throws -> () {
         try encoding.injectModel(model: model)
     }
     

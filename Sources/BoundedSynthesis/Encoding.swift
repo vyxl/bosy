@@ -11,6 +11,6 @@ protocol BoSyEncoding {
     
     mutating func solve(forBound bound: Int) throws -> String?
     func extractSolution() -> TransitionSystem?
-    func injectModel(model: String) throws -> ()
+    mutating func injectModel(model: String) throws -> ()
     
 }

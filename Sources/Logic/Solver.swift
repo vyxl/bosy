@@ -133,6 +133,7 @@ public protocol CertifyingQbfSolver: Solver {
 public protocol SmtSolver: Solver {
     func solve(formula: String) -> SolverResult?
     func getValue(expression: String) -> Logic?
+    func injectModel(model: String) throws -> ()
 }
 
 public protocol DqbfSolver: Solver {
@@ -831,6 +832,17 @@ class GenericSmtSolver: SmtSolver {
             return nil
         }
         return result
+    }
+
+    func injectModel(model: String) throws -> () {
+        precondition(task.isRunning)
+
+        inputPipe.fileHandleForWriting.write(model.data(using: .utf8)!)
+        let data = outputPipe.fileHandleForReading.availableData
+        guard let resultString = String(data: data, encoding: .utf8) else {
+            return
+        }
+        print("got back: \(resultString)")
     }
     
 }

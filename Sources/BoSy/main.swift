@@ -226,7 +226,7 @@ private func getRepresentation() -> (() -> ()) {
         let automaton = CoBüchiAutomaton(initialStates: [], states: [], transitions: [:],
             safetyConditions: [:], rejectingStates: [])
 
-        let search = SolutionSearch(options: options, specification: specification, automaton:
+        var search = SolutionSearch(options: options, specification: specification, automaton:
             automaton, backend: options.backend, initialBound: options.minBound, synthesize: false)
 
         do {

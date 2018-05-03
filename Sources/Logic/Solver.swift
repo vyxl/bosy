@@ -821,14 +821,18 @@ class GenericSmtSolver: SmtSolver {
         precondition(task.isRunning)
         
         guard let encoded = "(get-value (\(expression)))\n".data(using: .utf8) else {
+            Logger.default().error("getValue: could not get encoded expression for \(expression)")
             return nil
         }
         inputPipe.fileHandleForWriting.write(encoded)
         let data = outputPipe.fileHandleForReading.availableData
         guard let resultString = String(data: data, encoding: .utf8) else {
+            Logger.default().error("getValue: could not get result for \(expression)")
             return nil
         }
+        Logger.default().debug("getValue: for \(expression), got \(resultString)")
         guard let result = BooleanUtils.parse(string: resultString.replacingOccurrences(of: "\(expression)", with: "")) else {
+            Logger.default().error("getValue: could not parse output for \(expression)")
             return nil
         }
         return result

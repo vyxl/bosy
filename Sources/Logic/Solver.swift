@@ -835,14 +835,15 @@ class GenericSmtSolver: SmtSolver {
     }
 
     func injectModel(model: String) throws -> () {
-        precondition(task.isRunning)
+        if !task.isRunning {
+            task.launch()
+        }
 
-        inputPipe.fileHandleForWriting.write(model.data(using: .utf8)!)
-        let data = outputPipe.fileHandleForReading.availableData
-        guard let resultString = String(data: data, encoding: .utf8) else {
+        guard let encodedModel = (model + "(check-sat)\n").data(using: .utf8) else {
             return
         }
-        print("got back: \(resultString)")
+
+        inputPipe.fileHandleForWriting.write(encodedModel)
     }
     
 }

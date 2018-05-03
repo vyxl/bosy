@@ -191,13 +191,16 @@ struct SmtEncoding: BoSyEncoding {
                 let parameters = inputPropositions.map({ i[$0]! })
                 let tauApplication = FunctionApplication(function: Proposition("tau"), application: [Proposition("s\(source)")] as [Logic] + parameters)
                 guard let value = solver.getValue(expression: tauApplication.accept(visitor: printer)) else {
+                    Logger.default().error("extractSolution: could not get value: \(i)")
                     return nil
                 }
                 guard let proposition = value as? Proposition else {
+                    Logger.default().error("extractSolution: could not get proposition: \(i)")
                     return nil
                 }
                 let transition = i.map({ v, val in val == Literal.True ? v : !v }).reduce(Literal.True, &)
                 guard let target = Int(proposition.name[proposition.name.index(after: proposition.name.startIndex)..<proposition.name.endIndex], radix: 10) else {
+                    Logger.default().error("extractSolution: could not get transition: \(i)")
                     return nil
                 }
                 solution.addTransition(from: source, to: target, withGuard: transition)
@@ -217,9 +220,11 @@ struct SmtEncoding: BoSyEncoding {
                         let inputProps: [Logic] = [Proposition("s\(source)")] + parameters
                         let outputApplication = FunctionApplication(function: Proposition(output), application: inputProps)
                         guard let value = solver.getValue(expression: outputApplication.accept(visitor: printer)) else {
+                            Logger.default().error("extractSolution: could not get value: \(i)")
                             return nil
                         }
                         guard let literal = value as? Literal else {
+                            Logger.default().error("extractSolution: could not get literal: \(i)")
                             return nil
                         }
                         if literal == Literal.False {
@@ -231,9 +236,11 @@ struct SmtEncoding: BoSyEncoding {
                 case .moore:
                     let outputApplication = FunctionApplication(function: Proposition(output), application: [Proposition("s\(source)")])
                     guard let value = solver.getValue(expression: outputApplication.accept(visitor: printer)) else {
+                        Logger.default().error("extractSolution: could not get value")
                         return nil
                     }
                     guard let literal = value as? Literal else {
+                        Logger.default().error("extractSolution: could not get literal")
                         return nil
                     }
                     enabled = literal

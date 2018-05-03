@@ -219,6 +219,11 @@ private func getSynthesis(search: SolutionSearch) -> () {
 private func getRepresentation() -> (() -> ()) {
 
     return {
+        guard let model = specification.model else {
+            Logger.default().error("no model to inject")
+            exit(1)
+        }
+
         // dummy
         let automaton = CoBüchiAutomaton(initialStates: [], states: [], transitions: [:],
             safetyConditions: [:], rejectingStates: [])
@@ -227,7 +232,7 @@ private func getRepresentation() -> (() -> ()) {
             automaton, backend: options.backend, initialBound: options.minBound, synthesize: false)
 
         do {
-            try search.injectModel(model: fileContents)
+            try search.injectModel(model: model)
         } catch {
             Logger.default().error("could not inject model: \(error)")
             exit(1)

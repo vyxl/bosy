@@ -341,3 +341,70 @@ TODO: should be able to specify as array of strings
 TODO: either call release binary directly or skip build altogether for maximum speed
 
 `./.build/x86_64-apple-macosx10.10/release/BoSy`
+
+---
+
+trying to get verilog output from bosy to compile and produce example traces
+
+bosy output is not legal verilog for icarus
+- change module name to main
+- remove clock thing to get output at every step
+- added display statement
+
+```
+module main(r_0, g_0);
+  input r_0;
+  output g_0;
+  reg [0:0] state;
+  reg clk;
+  
+  initial begin
+   clk = 0;
+  end
+     
+  always begin
+     #5 clk = ~clk;
+  end
+
+  assign g_0 = ((state == 0) && 1 || (state == 1) && r_0) ? 1 : 0;
+
+  initial
+  begin
+    state = 0;
+  end
+  always @(clk)
+  begin
+    $display (g_0);
+    case(state)
+      0:
+           state = 0;
+
+      1:
+           state = 1;
+
+    endcase
+  end
+endmodule
+```
+
+iverilog -o veri veri.v
+vvp -i -s veri # interactive, stop immediately
+
+got test harness going
+
+get outputs, so need a function that translates (bosy output, input trace) -> (verilog file)
+
+---
+
+### putting it all together
+
+- JSON spec -> bosy -> SMT formula
+- SMT formula -> python script -> models
+- model + JSON spec -> bosy -> verilog
+- verilog + trace -> verilog translation -> verilog program
+- verilog prog -> icarus/vvp -> trace
+
+may need to rerun bosy from spec to get models with more states
+
+IDEA - BoSy output to separate file so can generate several traces & models and recombine them
+easily?

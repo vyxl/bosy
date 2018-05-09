@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-swift run -c release BoSy ${@:1}
+./.build/x86_64-apple-macosx10.10/release/BoSy ${@:1}
+# swift run -c release BoSy ${@:1}
 
 exit_code=$?
 
